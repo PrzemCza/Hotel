@@ -1,0 +1,36 @@
+﻿@page "/reservation"
+@inject HttpClient Http
+
+<h3>Make a Reservation</h3>
+
+<EditForm Model="newReservation" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="roomName">Room Name:</label>
+        <InputText id="roomName" @bind-Value="newReservation.Name" />
+    </div>
+    <div>
+        <label for="isAvailable">Is Available:</label>
+        <InputCheckbox id="isAvailable" @bind-Value="newReservation.IsAvailable" />
+    </div>
+    <button type="submit">Reserve</button>
+</EditForm>
+
+@code {
+    private Room newReservation = new Room();
+
+    private async Task HandleValidSubmit()
+    {
+        await Http.PostAsJsonAsync("api/Rooms", newReservation);
+        newReservation = new Room(); // Reset form
+    }
+
+    public class Room
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsAvailable { get; set; }
+    }
+}

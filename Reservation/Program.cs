@@ -11,9 +11,16 @@ builder.Services.AddDbContext<HotelContext>(options =>
 // Dodaj us³ugi kontrolerów
 builder.Services.AddControllers();
 
-
-
 var app = builder.Build();
+
+// Seed the database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<HotelContext>();
+    context.Database.Migrate();
+    DbInitializer.Seed(context);
+}
 
 // Konfiguracja middleware
 if (app.Environment.IsDevelopment())

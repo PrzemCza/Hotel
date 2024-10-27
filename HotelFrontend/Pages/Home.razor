@@ -1,0 +1,27 @@
+﻿@page "/"
+@inject HttpClient Http
+
+<h3>Available Rooms</h3>
+
+<ul>
+    @foreach (var room in rooms)
+    {
+        <li>@room.Name - @(room.IsAvailable ? "Available" : "Not Available")</li>
+    }
+</ul>
+
+@code {
+    private List<Room> rooms;
+
+    protected override async Task OnInitializedAsync()
+    {
+        rooms = await Http.GetFromJsonAsync<List<Room>>("api/Rooms");
+    }
+
+    public class Room
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public bool IsAvailable { get; set; }
+    }
+}
